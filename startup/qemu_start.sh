@@ -1,0 +1,1 @@
+qemu-system-riscv32 -machine virt -nographic -bios none -kernel riscv32.elf -s -S
