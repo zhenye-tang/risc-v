@@ -16,9 +16,7 @@ int main(void)
 
     uint32_t current_time = *MTIME;
     *MTIMECMP = current_time + 10000;  // 设置 1ms 的间隔
-    asm volatile("csrsi mstatus, 0x8");  // 开启全局中断（MIE）
-   // asm volatile("csrsi mie, 0x80");     // 开启定时器中断（MTIE）
-   asm volatile("csrs mie, %0" : : "r"(0x80));
+    asm volatile("csrs mie, %0" : : "r"(0x80));
 
     int a,b;
     a = 10;

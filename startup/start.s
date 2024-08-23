@@ -2,14 +2,18 @@
 
 .globl _start
 _start:
+	csrrci a0, mstatus, 0x8 	
+	li a0, 0x1800       
+	csrw mstatus, a0
     # setup default trap vector
     la      t0, interrupt_handler
-    csrw    mtvec, t0
+    csrw    mtvec, t0 
     la sp, _sstack
+    csrsi mstatus, 0x8
     j main
 
 .macro save_contex
-    addi sp, sp, -128             # 为32个寄存器保留栈空间
+    addi sp, sp, -128 
     sw x1, 4*1(sp)
     sw x3, 4*3(sp)
     sw x4, 4*4(sp)
@@ -41,9 +45,9 @@ _start:
     sw x30, 4*30(sp)
     sw x31, 4*31(sp)
 
-    csrr t0, mepc                  # 保存 mepc (返回地址)
+    csrr t0, mepc
     sw t0, 4*2(sp)
-    csrr t0, mcause                # 保存 mcause (中断/异常原因)
+    csrr t0, mcause
     sw t0, 4*0(sp)
 .endm
 
@@ -85,8 +89,8 @@ _start:
     lw x30, 4*30(sp)
     lw x31, 4*31(sp)
     
-    addi sp, sp, 128              # 恢复栈指针
-    mret                          # 返回主程序
+    addi sp, sp, 128
+    mret
 .endm
 
 .globl interrupt_handler
