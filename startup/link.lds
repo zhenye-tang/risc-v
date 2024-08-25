@@ -3,12 +3,15 @@ MEMORY
     RAM (rwx) : ORIGIN = 0x80000000, LENGTH = 0x18800000
 }
 
+ENTRY(_start)
+
 SECTIONS
 {
     .text :
     {
-        *(_start)
+        KEEP(*(.text._start))
         *(.text)
+        *(.text.*)
     } > RAM
 
     .rodata   : { *(.rodata) *(.rodata.*) } > RAM

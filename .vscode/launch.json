@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/startup/riscv32.elf",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/home/null/inspiration/riscv/bin/riscv32-unknown-elf-gdb",
+            "miDebuggerServerAddress": "localhost:1234",
+            "setupCommands": [], //
+        }
+    ]
+}

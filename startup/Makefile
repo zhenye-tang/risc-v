@@ -1,13 +1,13 @@
-CROSS_COMPILE ?= /home/tzy/riscv32_tool/bin/riscv32-unknown-elf-
+CROSS_COMPILE ?= riscv32-unknown-elf-
 
-objs := start.o main.o uart.o irq.o
+objs := interrupt_gcc.o startup_gcc.o main.o uart.o irq.o plic.o trap.o mtime.o vsnprintf.o
 
 riscv32.bin:$(objs)
-	$(CROSS_COMPILE)ld -Tlink.lds -o riscv32.elf $^
+	$(CROSS_COMPILE)ld --no-warn-rwx-segments -Tlink.lds -o riscv32.elf $^
 	$(CROSS_COMPILE)objcopy -O binary -S riscv32.elf $@
 	$(CROSS_COMPILE)objdump -D riscv32.elf > riscv32.dis
-	
-%.o:%.s
+
+%.o:%.S
 	$(CROSS_COMPILE)gcc -march=rv32imazicsr -mabi=ilp32 -Wall -nostdlib -c -O0 -g -o $@ $<
 
 %.o:%.c

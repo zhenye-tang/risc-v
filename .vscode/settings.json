@@ -1,0 +1,10 @@
+{
+    "clangd.arguments": [
+        "--background-index",
+        "--compile-commands-dir=/home/null/inspiration/qemu-riscv/risc-v-learn/startup", //compile_commands.json
+        "--clang-tidy",
+        "--clang-tidy-checks=performance-*,bugprone-*",
+        "--completion-style=detailed",
+        ],
+    "C_Cpp.intelliSenseEngine": "disabled"
+}

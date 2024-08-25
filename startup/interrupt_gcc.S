@@ -1,17 +1,3 @@
-.section .text
-
-.globl _start
-_start:
-	csrrci a0, mstatus, 0x8 	
-	li a0, 0x1800       
-	csrw mstatus, a0
-    # setup default trap vector
-    la      t0, interrupt_handler
-    csrw    mtvec, t0 
-    la sp, _sstack
-    csrsi mstatus, 0x8
-    j main
-
 .macro save_contex
     addi sp, sp, -128 
     sw x1, 4*1(sp)
@@ -46,17 +32,17 @@ _start:
     sw x31, 4*31(sp)
 
     csrr t0, mepc
-    sw t0, 4*2(sp)
-    csrr t0, mcause
     sw t0, 4*0(sp)
+    csrr t0, mstatus
+    sw t0, 4*2(sp)
 .endm
 
 .macro restore_contex
     lw t0, 4*0(sp)
-    csrw mcause, t0
+    csrw mepc, t0
 
     lw t0, 4*2(sp)
-    csrw mepc, t0
+    csrw mstatus, t0
 
     lw x1, 4*1(sp)
     lw x3, 4*3(sp)
@@ -88,17 +74,17 @@ _start:
     lw x29, 4*29(sp)
     lw x30, 4*30(sp)
     lw x31, 4*31(sp)
-    
+
     addi sp, sp, 128
-    mret
 .endm
 
-.globl interrupt_handler
-
-interrupt_handler:
-    # save contex
+.globl trap_entry
+trap_entry:
     save_contex
-    la t0, handle_interrupt
-    jalr t0
+    # trap handler
+    csrr    a0, mcause
+    mv    a1, sp
+    call    handle_trap
+    # restore
     restore_contex
-
+    mret

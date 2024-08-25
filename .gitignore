@@ -1,0 +1,6 @@
+*.o
+.cache/
+compile_commands.json
+*.bin
+*.dis
+*.elf
