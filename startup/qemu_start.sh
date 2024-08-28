@@ -1,1 +1,1 @@
-qemu-system-riscv32 -machine virt -m 128M -nographic -serial mon:stdio -bios none -kernel riscv32.elf -s -S
+qemu-system-riscv32 -machine virt -m 128M -smp 4 -nographic -serial mon:stdio -bios none -kernel riscv32.elf -s -S
