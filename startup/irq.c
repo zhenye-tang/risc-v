@@ -20,6 +20,7 @@ void interrupt_init(void)
         irq_desc[idx].param = NULL;
     }
     plic_set_threshold(0);
+    __enable_irq();
 }
 
 void interrupt_umask(int vector)

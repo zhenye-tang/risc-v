@@ -87,4 +87,9 @@ trap_entry:
     call    handle_trap
     # restore
     restore_contex
+    /*
+        1. Return from the machine mode exception handler. Set PC to mepc.
+        2. Set the privilege level to mstatus.mpp, mstatus.mie to mstatus.mpie, and clear mstatus.mpie to 0.
+        3. If user mode is supported, set mstatus.mpp to 0.
+    */
     mret

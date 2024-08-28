@@ -2,9 +2,10 @@
 
 .globl _start
 _start:
-    csrrci a0, mstatus, 0x8
-    li a0, 0x1800
-    csrw mstatus, a0
+    li     t0, 3 << 11      # mpp: 11 Machine mode
+    csrr   a1, mstatus
+    or     t0, t0, a1
+    csrw   mstatus, t0
 
     la      t0, trap_entry
     csrw    mtvec, t0
@@ -20,6 +21,4 @@ __bss_init:
 
 __cpu_stack_init:
     la sp, _sstack
-    csrsi mstatus, 0x8
-
     j main
