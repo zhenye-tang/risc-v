@@ -2,6 +2,9 @@
 #include <stdint.h>
 #include "irq.h"
 #include "mtime.h"
+#include "spin_lock.h"
+
+static spinlock_t lock;
 
 int main(void)
 {
@@ -9,6 +12,7 @@ int main(void)
     uart_init();
     mtime_init();
     uart_printf("hello risc-v.\n");
+    spin_lock(&lock);
     while(1)
     {
         mtime_mdelay(1000);

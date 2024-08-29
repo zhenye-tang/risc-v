@@ -2,17 +2,24 @@
 
 .globl _start
 _start:
+    csrr a0, mhartid
+
+    li  t0, 0
+    beq a0, t0, __primary_core0_init # 如果是第 0 个核
+
+    li  t0, 1
+    beq a0, t0, __secondary_core1_init # 如果是第 0 个核
+
+    li  t0, 2
+    beq a0, t0, __secondary_core2_init # 如果是第 0 个核
+
+    li  t0, 3
+    beq a0, t0, __secondary_core3_init # 如果是第 0 个核
+
+__primary_core0_init:
     csrrci a0, mstatus, 0x8
     li a0, 0x1800
     csrw mstatus, a0
-
-    /*
-    1. 读取 cpuid, 如果是其他核心，则让它等着，主核启动之后，让从核启动，从核启动后，要跑那些代码呢？
-    2. 跑那些代码，是我决定的
-    3. 每个核心都有自己的一套寄存器、中断向量表, 来中断之后，那个核心处理？
-    4. 每个核都有可能跑代码段的指令，那么对于临界区的保户是怎么样的，能用 mutex 吗？
-    5. 在某一时刻，如何指定让某些核运行指定的代码？
-     */
 
     la      t0, trap_entry
     csrw    mtvec, t0
@@ -31,3 +38,20 @@ __cpu_stack_init:
     csrsi mstatus, 0x8
 
     j main
+
+
+
+
+
+__secondary_core1_init:
+    wfi
+    j __secondary_core1_init
+
+__secondary_core2_init:
+    wfi
+    j __secondary_core2_init
+
+__secondary_core3_init:
+    wfi
+    j __secondary_core3_init
+

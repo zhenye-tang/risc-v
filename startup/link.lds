@@ -37,7 +37,25 @@ SECTIONS
     .stack : ALIGN(4K)
     {
         _estack = .;
-        . += 128K;
+        . += 8K;
         _sstack = .;
     }
+
+    .stack0 (NOLOAD) : {
+        _stack0_start = .;
+        . = . + 4K;
+        _stack0_end = .;
+    } > RAM
+
+    .stack1 (NOLOAD) : {
+        _stack1_start = .;
+        . = . + 4K;
+        _stack1_end = .;
+    } > RAM
+
+    .stack2 (NOLOAD) : {
+        _stack2_start = .;
+        . = . + 4K;
+        _stack2_end = .;
+    } > RAM
 }
