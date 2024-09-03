@@ -31,16 +31,11 @@
     sw x30, 4*30(sp)
     sw x31, 4*31(sp)
 
-    csrr t0, mepc
-    sw t0, 4*0(sp)
     csrr t0, mstatus
     sw t0, 4*2(sp)
 .endm
 
 .macro restore_contex
-    lw t0, 4*0(sp)
-    csrw mepc, t0
-
     lw t0, 4*2(sp)
     csrw mstatus, t0
 
@@ -83,9 +78,10 @@ trap_entry:
     save_contex
     # trap handler
     csrr    a0, mcause
-    mv    a1, sp
+    csrr    a1, mepc
+    mv      a2, sp
     call    handle_trap
-    # restore
+    csrw mepc, a0
     restore_contex
     /*
         1. Return from the machine mode exception handler. Set PC to mepc.

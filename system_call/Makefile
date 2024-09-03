@@ -1,6 +1,6 @@
 CROSS_COMPILE ?= riscv32-unknown-elf-
 
-objs := startup_gcc.o interrupt_gcc.o main.o uart.o trap.o vsnprintf.o
+objs := startup_gcc.o interrupt_gcc.o main.o uart.o trap.o vsnprintf.o syscall.o board.o
 
 riscv32.bin:$(objs)
 	$(CROSS_COMPILE)ld --no-warn-rwx-segments -Tlink.lds -o riscv32.elf $^

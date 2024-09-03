@@ -34,4 +34,8 @@ __cpu_stack_init:
     la sp, _sstack
     la t0, main
     csrw mepc, t0
+
+    // M mode init hw
+    call    board_init
+
     mret

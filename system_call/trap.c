@@ -1,6 +1,8 @@
 #include <stdint.h>
+#include "stack.h"
+#include "uart.h"
 
-void handle_trap(unsigned long mcause)
+unsigned long handle_trap(unsigned long mcause, unsigned long mepc, struct rv_stack_frame *ctx)
 {
     if (mcause == 0x80000007)
     {
@@ -14,10 +16,21 @@ void handle_trap(unsigned long mcause)
     {
         /* M mode soft isr */
     }
-    else
+    else if (mcause == 0x8)
     {
-        /* exception */
-        while(1);
+        mepc += 4;
+
+        if (ctx->a7 == 1)
+        {
+            /* putchar */
+            uart_putc(ctx->a0);
+        }
+        else if(ctx->a7 == 4)
+        {
+            __asm__ volatile ("csrr %0, mhartid" : "=r" (ctx->a0));
+        }
     }
 
+
+    return mepc;
 }
