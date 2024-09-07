@@ -4,3 +4,9 @@ compile_commands.json
 *.bin
 *.dis
 *.elf
+*.map
+build/
+*.i
+*.s
+*.pyc
+*.dblite

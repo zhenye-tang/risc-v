@@ -1,0 +1,9 @@
+menu "Hardware Drivers Config"
+
+config SOC_QEMU_RV32
+    bool
+    select RT_USING_COMPONENTS_INIT
+    select RT_USING_USER_MAIN
+    default y
+
+endmenu

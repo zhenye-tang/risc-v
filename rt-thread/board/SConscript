@@ -1,0 +1,19 @@
+import os
+import rtconfig
+from building import *
+
+cwd = GetCurrentDir()
+
+src = Split('''
+board.c
+startup_gcc.S
+trap.c
+tick.c
+trap_gcc.S
+''')
+
+path =  [cwd]
+
+group = DefineGroup('Drivers', src, depend = [''], CPPPATH = path)
+
+Return('group')
