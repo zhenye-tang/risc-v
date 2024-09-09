@@ -5,7 +5,7 @@ MEMORY
    SRAM : ORIGIN = 0x80000000, LENGTH = 0x1000000
 }
 
-__STACKSIZE__ = 16384;
+__STACKSIZE__ = 8192;
 
 ENTRY(_start)
 SECTIONS
@@ -107,10 +107,15 @@ SECTIONS
 
         . += __STACKSIZE__;
         __stack_cpu0 = .;
-        PROVIDE( __rt_rvstack = . );
 
         . += __STACKSIZE__;
         __stack_cpu1 = .;
+
+        . += __STACKSIZE__;
+        __stack_cpu2 = .;
+
+        . += __STACKSIZE__;
+        __stack_cpu3 = .;
     } > SRAM
 
     .sbss (NOLOAD):

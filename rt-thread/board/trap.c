@@ -8,21 +8,12 @@
 #define ISR_NUMBER    32
 static struct rt_irq_desc irq_desc[ISR_NUMBER];
 
-/**
- * Temporary interrupt entry function
- *
- * @param mcause Machine Cause Register
- * @return RT_NULL
- */
 rt_isr_handler_t rt_hw_interrupt_handle(rt_uint32_t mcause)
 {
     rt_kprintf("UN-handled interrupt %d occurred!!!\n", mcause);
     return RT_NULL;
 }
 
-/**
- * Interrupt entry function initialization
- */
 void rt_hw_interrupt_init(void)
 {
     int idx = 0;
@@ -91,5 +82,4 @@ void handle_trap(rt_uint32_t mcause, rt_uint32_t mepc, struct rt_hw_stack_frame 
         rt_backtrace();
         while(1);
     }
-
 }

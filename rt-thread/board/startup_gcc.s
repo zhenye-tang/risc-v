@@ -7,7 +7,7 @@ _start:
     or     t0, t0, a1
     csrw   mstatus, t0
 
-    la      t0, SW_handler
+    la      t0, trap_entry
     csrw    mtvec, t0
 
 __bss_init:

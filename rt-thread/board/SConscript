@@ -6,10 +6,9 @@ cwd = GetCurrentDir()
 
 src = Split('''
 board.c
-startup_gcc.S
+startup_gcc.s
 trap.c
 tick.c
-trap_gcc.S
 ''')
 
 path =  [cwd]

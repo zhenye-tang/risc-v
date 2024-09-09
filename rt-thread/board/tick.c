@@ -1,5 +1,4 @@
-#include "rtconfig.h"
-#include <rthw.h>
+#include "rtdef.h"
 #include <rtthread.h>
 #include <encoding.h>
 #include <stdint.h>
@@ -49,10 +48,8 @@ void rt_hw_us_delay(rt_uint32_t us)
 
 int rt_hw_tick_isr(void)
 {
-    clear_csr(mie, MIP_MTIP);
-    rt_tick_increase();
     mtime_update();
-    set_csr(mie, MIP_MTIP);
+    rt_tick_increase();
     return 0;
 }
 
@@ -63,3 +60,4 @@ int rt_hw_tick_init(void)
     set_csr(mie, MIP_MTIP);
     return 0;
 }
+INIT_BOARD_EXPORT(rt_hw_tick_init);

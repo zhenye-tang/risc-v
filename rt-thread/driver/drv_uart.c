@@ -1,19 +1,7 @@
-#include "rtdef.h"
-#include <rthw.h>
 #include <rtdevice.h>
 #include <rtthread.h>
 #include <stddef.h>
 #include <stdio.h>
-
-struct device_uart
-{
-    rt_ubase_t hw_base;
-    rt_uint32_t irqno;
-};
-
-static void *uart0_base = (void*)0x10000000;
-static struct rt_serial_device serial0;
-static struct device_uart uart0;
 
 #define UART_BASE                     0x10000000
 #define UART_RBR                      (*(volatile uint8_t *)(UART_BASE + 0x00))
@@ -24,16 +12,28 @@ static struct device_uart uart0;
 #define UART_LCR                      (*(volatile uint8_t *)(UART_BASE + 0x03))
 #define UART_LSR                      (*(volatile uint8_t *)(UART_BASE + 0x05))
 #define UART_IRQ                      10
+#define UART_IER_RX_ENABLE            (1 << 0)
+#define UART_IER_TX_ENABLE            (1 << 1)
+
+struct device_uart
+{
+    rt_ubase_t hw_base;
+    rt_uint32_t irqno;
+};
+
+static struct rt_serial_device serial0;
+static struct device_uart uart0;
 
 void uart_init(void)
 {
     UART_LCR = 0x03;
     UART_FCR = 0x07;
-    UART_IER = 0x01;
 }
 
 static rt_err_t _uart_configure(struct rt_serial_device *serial, struct serial_configure *cfg)
 {
+    struct device_uart *uart = (struct device_uart*)serial->parent.user_data;
+    /* config uart */
     uart_init();
     return (RT_EOK);
 }
@@ -45,9 +45,16 @@ static rt_err_t _uart_control(struct rt_serial_device *serial, int cmd, void *ar
     switch (cmd)
     {
     case RT_DEVICE_CTRL_CLR_INT:
+        if ((size_t)arg == RT_DEVICE_FLAG_INT_RX)
+        {
+            UART_IER &= ~UART_IER_RX_ENABLE;
+        }
         break;
-
     case RT_DEVICE_CTRL_SET_INT:
+        if ((size_t)arg == RT_DEVICE_FLAG_INT_RX)
+        {
+            UART_IER |= UART_IER_RX_ENABLE;
+        }
         break;
     }
 
@@ -56,14 +63,18 @@ static rt_err_t _uart_control(struct rt_serial_device *serial, int cmd, void *ar
 
 static int _uart_putc(struct rt_serial_device *serial, char c)
 {
+    struct device_uart *uart = (struct device_uart*)serial->parent.user_data;
+
     while (!(UART_LSR & 0x20));
     UART_THR = c;
-    return (1);
+    return 1;
 }
 
 static int _uart_getc(struct rt_serial_device *serial)
 {
+    struct device_uart *uart = (struct device_uart*)serial->parent.user_data;
     int ch = -1;
+
     if (UART_LSR & 0x01)
         ch = UART_RBR;
     return ch;
@@ -74,8 +85,8 @@ const struct rt_uart_ops _uart_ops = {
     _uart_control,
     _uart_putc,
     _uart_getc,
-    // TODO: add DMA support
-    RT_NULL};
+    RT_NULL
+};
 
 static void rt_hw_uart_isr(int irqno, void *param)
 {
@@ -94,7 +105,7 @@ int rt_hw_uart_init(void)
     serial->ops = &_uart_ops;
     serial->config = config;
     serial->config.baud_rate = 115200;
-    uart->hw_base = (rt_ubase_t)uart0_base;
+    uart->hw_base = (rt_ubase_t)UART_BASE;
     uart->irqno = 0x0a;
 
     rt_hw_serial_register(serial,
@@ -105,4 +116,5 @@ int rt_hw_uart_init(void)
     rt_hw_interrupt_umask(uart->irqno);
     return 0;
 }
+INIT_BOARD_EXPORT(rt_hw_uart_init);
 
