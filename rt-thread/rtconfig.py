@@ -32,7 +32,7 @@ if PLATFORM == 'gcc':
     OBJDUMP = PREFIX + 'objdump'
     OBJCPY = PREFIX + 'objcopy'
 
-    DEVICE = ' -march=rv32imac_zicsr -mabi=ilp32 -nostartfiles -lc '
+    DEVICE = ' -march=rv32imad_zicsr_zifencei -mabi=ilp32d -nostartfiles -lc '
     CFLAGS = DEVICE
     CFLAGS += ' -save-temps=obj'
     AFLAGS = '-c'+ DEVICE + ' -x assembler-with-cpp'
