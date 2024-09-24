@@ -3,7 +3,7 @@ CROSS_COMPILE ?= riscv32-unknown-elf-
 objs := interrupt_gcc.o startup_gcc.o main.o uart.o irq.o plic.o trap.o mtime.o vsnprintf.o
 
 riscv32.bin:$(objs)
-	$(CROSS_COMPILE)ld --no-warn-rwx-segments -Tlink.lds -o riscv32.elf $^
+	$(CROSS_COMPILE)gcc -Wl,-Map=riscv32.map -nostartfiles -Tlink.lds -o riscv32.elf $^
 	$(CROSS_COMPILE)objcopy -O binary -S riscv32.elf $@
 	$(CROSS_COMPILE)objdump -D riscv32.elf > riscv32.dis
 
