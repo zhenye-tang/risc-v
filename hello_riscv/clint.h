@@ -29,6 +29,8 @@ extern "C" {
  * | 0x0200EFFC | Reserved                        |
  */
 
+#define CLINT_BASE_ADDR             (0x02000000U)
+
 typedef struct 
 {
     struct
