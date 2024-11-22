@@ -1,8 +1,10 @@
 #include <stdint.h>
+#include "clint.h"
 #include "plic.h"
 #include "stack.h"
 #include "irq.h"
 #include "mtime.h"
+#include "uart.h"
 
 extern struct irq_desc irq_desc[];
 
@@ -24,6 +26,8 @@ void handle_trap(unsigned long mcause, struct rv_stack_frame *sp)
     else if (mcause == 0x80000003)
     {
         /* M mode soft isr */
+        uart_printf("soft isr.\n");
+        clint_ipi_clear(0);
     }
     else
     {

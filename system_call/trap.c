@@ -18,6 +18,9 @@ unsigned long handle_trap(unsigned long mcause, unsigned long mepc, struct rv_st
     }
     else if (mcause == 0x8)
     {
+        // mcause == 8, user mode system call
+        // mcause == 9, supervisor mode system call
+        // mcause == 11, machine mode system call
         mepc += 4;
 
         if (ctx->a7 == 1)

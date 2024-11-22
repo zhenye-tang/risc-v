@@ -1,8 +1,20 @@
 #include "clint.h"
 #include "encoding.h"
+#include <stdint.h>
 
 #define CLINT_NUM_CORES            10
+#define CPUTIME_TIMER_FREQ         10000000
+
 volatile clint_t *const clint = (volatile clint_t *)CLINT_BASE_ADDR;
+
+struct clint_timer_desc
+{
+    uint64_t delayms;
+    uint64_t ticks;
+    uint64_t one_shot;
+    clint_timer_cb_t cb;
+    void *user_data;
+};
 
 struct clint_ipi_desc
 {
@@ -11,6 +23,7 @@ struct clint_ipi_desc
 };
 
 struct clint_ipi_desc clint_ipi_desc[CLINT_NUM_CORES];
+struct clint_timer_desc clint_timer_desc[CLINT_NUM_CORES];
 
 int clint_ipi_init(void)
 {
@@ -49,4 +62,50 @@ int clint_ipi_send(size_t core_id)
 
     clint->msip[core_id].msip = 1;
     return 0;
+}
+
+int clint_ipi_clear(size_t core_id)
+{
+    if (core_id > CLINT_NUM_CORES)
+        return -1;
+    if (clint->msip[core_id].msip)
+        clint->msip[core_id].msip = 0;
+    return 0;
+}
+
+int clint_timer_init(void)
+{
+    clear_csr(mie, MIP_MTIP);
+    unsigned long id = current_coreid();
+    clint_timer_desc[id] = (struct clint_timer_desc){0};
+    return 0;
+}
+
+int clint_timer_start(uint64_t delayms, int one_shot)
+{
+    int id = current_coreid();
+
+    clint_timer_desc[id].delayms = delayms;
+    clint_timer_desc[id].one_shot = one_shot;
+    clint_timer_desc[id].ticks = delayms * (CPUTIME_TIMER_FREQ / 1000UL);
+
+    uint64_t now = clint->mtime;
+    uint64_t end = now + clint_timer_desc[id].ticks;
+    clint->mtimecmp[id].value = end;
+    set_csr(mstatus, MSTATUS_MIE);
+    set_csr(mie, MIP_MTIP);
+
+    return 0;
+}
+
+int clint_timer_register(clint_timer_cb_t callback, void *user_data)
+{
+    return 0;
+}
+
+uintptr_t clint_mtimer_irq(uintptr_t mepc)
+{
+    int id = current_coreid();
+    (void)id;
+    return mepc;
 }

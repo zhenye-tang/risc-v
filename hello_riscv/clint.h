@@ -41,8 +41,15 @@ typedef struct
     uint32_t resv;
     struct
     {
-        uint64_t low : 32;
-        uint64_t hight : 32;    
+        union
+        {
+            struct
+            {
+                uint64_t low : 32;
+                uint64_t hight : 32;
+            };
+            uint64_t value;
+        };
     } mtimecmp[4095];
     uint64_t mtime;
 } clint_t;
@@ -60,6 +67,7 @@ int clint_ipi_register(clint_ipi_cb_t callback, void *user_data);
 
 /* CLINT timer init*/
 int clint_timer_init(void);
+int clint_timer_start(uint64_t delayms, int one_shot);
 int clint_timer_register(clint_timer_cb_t callback, void *user_data);
 
 #ifdef __cplusplus
