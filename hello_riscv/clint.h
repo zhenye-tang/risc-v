@@ -69,10 +69,11 @@ int clint_ipi_register(clint_ipi_cb_t callback, void *user_data);
 int clint_timer_init(void);
 int clint_timer_start(uint64_t delayms, int one_shot);
 int clint_timer_register(clint_timer_cb_t callback, void *user_data);
+int clint_timer_mdelay(uintptr_t ms);
+uintptr_t clint_timer_current_tick(void);
 
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif //__CLINT_H__

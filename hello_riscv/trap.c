@@ -3,8 +3,8 @@
 #include "plic.h"
 #include "stack.h"
 #include "irq.h"
-#include "mtime.h"
 #include "uart.h"
+#include "clint.h"
 
 extern struct irq_desc irq_desc[];
 
@@ -12,8 +12,8 @@ void handle_trap(unsigned long mcause, struct rv_stack_frame *sp)
 {
     if (mcause == 0x80000007)
     {
-        /* M mode timer isr */
-        mtime_isr();
+        extern uintptr_t clint_m_timer_irq_handle(uintptr_t mepc);
+        clint_m_timer_irq_handle(0);
     }
     else if (mcause == 0x8000000B)
     {
@@ -26,8 +26,8 @@ void handle_trap(unsigned long mcause, struct rv_stack_frame *sp)
     else if (mcause == 0x80000003)
     {
         /* M mode soft isr */
-        uart_printf("soft isr.\n");
-        clint_ipi_clear(0);
+        extern uintptr_t clint_m_soft_irq_handle(uintptr_t mepc);
+        clint_m_soft_irq_handle(0);
     }
     else
     {

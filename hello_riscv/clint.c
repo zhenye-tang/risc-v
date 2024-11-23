@@ -1,6 +1,5 @@
 #include "clint.h"
 #include "encoding.h"
-#include <stdint.h>
 
 #define CLINT_NUM_CORES            10
 #define CPUTIME_TIMER_FREQ         10000000
@@ -100,12 +99,54 @@ int clint_timer_start(uint64_t delayms, int one_shot)
 
 int clint_timer_register(clint_timer_cb_t callback, void *user_data)
 {
+    int id = current_coreid();
+    clint_timer_desc[id].cb = callback;
+    clint_timer_desc[id].user_data = user_data;
     return 0;
 }
 
-uintptr_t clint_mtimer_irq(uintptr_t mepc)
+uintptr_t clint_timer_current_tick(void)
+{
+    return clint->mtime;
+}
+
+int clint_timer_mdelay(uintptr_t ms)
+{
+    uintptr_t end = clint->mtime + ms * (CPUTIME_TIMER_FREQ / 1000UL);
+    uintptr_t current_time = clint->mtime;
+    while(current_time < end)
+    {
+        current_time = clint->mtime;
+    }
+    return 0;
+}
+
+uintptr_t clint_m_timer_irq_handle(uintptr_t mepc)
 {
     int id = current_coreid();
-    (void)id;
+
+    clear_csr(mie, MIP_MTIP);
+    if (clint_timer_desc[id].cb)
+        clint_timer_desc[id].cb(clint_timer_desc[id].user_data);
+
+    if (!clint_timer_desc[id].one_shot && clint_timer_desc[id].ticks)
+    {
+        clint->mtimecmp[id].value += clint_timer_desc[id].ticks;
+        set_csr(mie, MIP_MTIP);
+    }
+
     return mepc;
 }
+
+uintptr_t clint_m_soft_irq_handle(uintptr_t mepc)
+{
+    int id = current_coreid();
+
+    clear_csr(mie, MIP_MSIP);
+    clint->msip[id].msip = 0;
+    if (clint_ipi_desc[id].cb)
+        clint_ipi_desc[id].cb(clint_ipi_desc[id].user_data);
+    set_csr(mie, MIP_MSIP);
+    return mepc;
+}
+
