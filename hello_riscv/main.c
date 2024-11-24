@@ -5,7 +5,7 @@
 
 static int clint_timer_cb(void *user_data)
 {
-    clint_ipi_send(0);
+    clint_ipi_send(1);
     return 0;
 }
 
@@ -21,16 +21,13 @@ int main(void)
     uart_init();
     uart_printf("hello risc-v.\n");
     clint_timer_init();
-    clint_timer_start(1000, 1);
+    clint_timer_start(1000, 0);
     clint_timer_register(clint_timer_cb, NULL);
     clint_ipi_init();
     clint_ipi_enable();
-    clint_ipi_register(clint_ipi_cb, "soft isr.\n");
-    while(1)
-    {
-        clint_timer_mdelay(1000);
-        uart_printf("current tick = %d.\n", (uint32_t)clint_timer_current_tick());
-    }
-
+    clint_ipi_register(clint_ipi_cb, "core0 soft isr.\n");
+    void secondary_cpu_weakup(void);
+    secondary_cpu_weakup();
+    while(1);
     return 0;
 }

@@ -1,8 +1,10 @@
 MEMORY
 {
-    ROM (rx) : ORIGIN = 0x80000000, LENGTH = 512K
-    RAM (rwx) : ORIGIN = 0x80080000, LENGTH = 512K
+    ROM (rx) : ORIGIN = 0x80000000, LENGTH = 0x200000
+    RAM (rwx) : ORIGIN = 0x80200000, LENGTH = 0x1000000
 }
+
+__STACKSIZE__ = 16384;
 
 ENTRY(_start)
 
@@ -47,12 +49,16 @@ SECTIONS
     } > RAM
     __bss_end = .;
 
-    .stack : ALIGN(4K)
+    .stack : ALIGN(64)
     {
-        _estack = .;
-        . += 128K;
-        _sstack = .;
-    }
+        __stack_start__ = .;
+
+        . += __STACKSIZE__;
+        __stack_cpu0 = .;
+
+        . += __STACKSIZE__;
+        __stack_cpu1 = .;
+    } > RAM
 
     PROVIDE(_memory_start = ORIGIN(RAM));
 	PROVIDE(_memory_end = ORIGIN(RAM) + LENGTH(RAM));

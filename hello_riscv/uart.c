@@ -54,6 +54,7 @@ void uart_init(void)
 
 void uart_printf(char* fmt,...)
 {
+    /* TODO: add spin lock */
     static uint8_t tx_buf[200];
     va_list ap;
     va_start(ap,fmt);

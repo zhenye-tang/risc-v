@@ -105,15 +105,15 @@ int clint_timer_register(clint_timer_cb_t callback, void *user_data)
     return 0;
 }
 
-uintptr_t clint_timer_current_tick(void)
+uint64_t clint_timer_current_tick(void)
 {
     return clint->mtime;
 }
 
-int clint_timer_mdelay(uintptr_t ms)
+int clint_timer_mdelay(uint64_t ms)
 {
-    uintptr_t end = clint->mtime + ms * (CPUTIME_TIMER_FREQ / 1000UL);
-    uintptr_t current_time = clint->mtime;
+    uint64_t end = clint->mtime + ms * (CPUTIME_TIMER_FREQ / 1000UL);
+    uint64_t current_time = clint->mtime;
     while(current_time < end)
     {
         current_time = clint->mtime;
