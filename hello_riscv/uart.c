@@ -62,6 +62,7 @@ void uart_printf(char* fmt,...)
     va_list ap;
     va_start(ap,fmt);
 
+    /* TODO: It may lead to a deadlock. */
     spinlock_lock(&spinlock);
     vsnprintf((char*)tx_buf,200, fmt,ap);
     va_end(ap);
