@@ -1,6 +1,13 @@
 #include "clint.h"
 #include "uart.h"
 
+/* memory barrier macro */
+#define mb()                          \
+    {                                 \
+        asm volatile("fence" ::       \
+                         : "memory"); \
+    }
+
 extern unsigned int __bss_start;
 extern unsigned int __bss_end;
 
@@ -44,6 +51,8 @@ void primary_cpu_entry(void)
 void secondary_cpu_weakup(void)
 {
     weakup_flag = 1;
+    /* Use memory barrier to keep coherency */
+    mb();
 }
 
 static int clint_ipi_cb(void *user_data)
