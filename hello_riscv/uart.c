@@ -4,6 +4,7 @@
 #include "uart.h"
 #include <stdio.h>
 #include <stdarg.h>
+#include "atomic.h"
 
 #define UART_BASE                     0x10000000
 #define UART_RBR                      (*(volatile uint8_t *)(UART_BASE + 0x00))
@@ -52,13 +53,18 @@ void uart_init(void)
     interrupt_umask(UART_IRQ);
 }
 
+static spinlock_t spinlock;
+
 void uart_printf(char* fmt,...)
 {
     /* TODO: add spin lock */
     static uint8_t tx_buf[200];
     va_list ap;
     va_start(ap,fmt);
+
+    spinlock_lock(&spinlock);
     vsnprintf((char*)tx_buf,200, fmt,ap);
     va_end(ap);
     uart_puts((const char *)tx_buf);
+    spinlock_unlock(&spinlock);
 }

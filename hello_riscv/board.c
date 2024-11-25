@@ -1,12 +1,6 @@
 #include "clint.h"
 #include "uart.h"
-
-/* memory barrier macro */
-#define mb()                          \
-    {                                 \
-        asm volatile("fence" ::       \
-                         : "memory"); \
-    }
+#include "atomic.h"
 
 extern unsigned int __bss_start;
 extern unsigned int __bss_end;
@@ -61,17 +55,27 @@ static int clint_ipi_cb(void *user_data)
     return 0;
 }
 
+static int clint_timer_cb(void *user_data)
+{
+    clint_ipi_send(0);
+    return 0;
+}
+
 void secondary_cpu_entry(void)
 {
     /* TODO: What if weakup_flag is a junk value? Is there a more elegant way?*/
     while (!weakup_flag);
 
+    clint_timer_init();
+    clint_timer_start(2000, 0);
+    clint_timer_register(clint_timer_cb, NULL);
+
     clint_ipi_init();
     clint_ipi_enable();
     clint_ipi_register(clint_ipi_cb, "core1 soft isr.\n");
+
     while (1)
     {
         clint_timer_mdelay(1000);
-        clint_ipi_send(0);
     }
 }
