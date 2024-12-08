@@ -21,7 +21,7 @@ LINK_FILE = './link.lds'
 TARGET_NAME = 'rtthread.bin'
 
 if PLATFORM == 'gcc':
-    PREFIX = 'riscv64-unknown-elf-'
+    PREFIX = 'riscv64-zephyr-elf-'
     CC = PREFIX + 'gcc'
     CXX= PREFIX + 'g++'
     AS = PREFIX + 'gcc'

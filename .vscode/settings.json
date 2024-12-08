@@ -1,4 +1,5 @@
 {
+    "clangd.path": "/usr/bin/clangd",
     "clangd.arguments": [
         "--background-index",
         "--compile-commands-dir=/home/tzy/inspiration/riscv-learning/risc-v-learn/rt-thread", //compile_commands.json
@@ -6,5 +7,4 @@
         "--clang-tidy-checks=performance-*,bugprone-*",
         "--completion-style=detailed",
         ],
-    "C_Cpp.intelliSenseEngine": "disabled"
 }

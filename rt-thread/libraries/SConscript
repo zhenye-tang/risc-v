@@ -1,0 +1,18 @@
+import os
+import rtconfig
+from building import *
+
+cwd = GetCurrentDir()
+
+src = Split('''
+clint.c
+irq.c
+plic.c
+uart.c
+''')
+
+path =  [cwd]
+
+group = DefineGroup('Libraries', src, depend = [''], CPPPATH = path)
+
+Return('group')

@@ -69,6 +69,7 @@ SECTIONS
 
     .data :
     {
+        PROVIDE( __global_pointer = .);
         *(.data)
         *(.data.*)
 
@@ -76,7 +77,6 @@ SECTIONS
         *(.data1.*)
 
         . = ALIGN(8);
-        PROVIDE( __global_pointer$ = . + 0x800 );
 
         *(.sdata)
         *(.sdata.*)

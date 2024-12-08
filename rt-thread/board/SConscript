@@ -9,6 +9,8 @@ board.c
 startup_gcc.s
 trap.c
 tick.c
+cpuport_smp.c
+interrupt.c
 ''')
 
 path =  [cwd]

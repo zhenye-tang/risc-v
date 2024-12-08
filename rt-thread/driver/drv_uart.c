@@ -24,7 +24,7 @@ struct device_uart
 static struct rt_serial_device serial0;
 static struct device_uart uart0;
 
-void uart_init(void)
+static void uart_init(void)
 {
     UART_LCR = 0x03;
     UART_FCR = 0x07;

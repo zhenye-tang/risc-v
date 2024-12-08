@@ -9,3 +9,8 @@ PKGS_DIR := packages
 source "$(RTT_DIR)/Kconfig"
 source "$PKGS_DIR/Kconfig"
 source "board/Kconfig"
+
+config __STACKSIZE__
+    int "stack size for interrupt"
+    default 4096
+

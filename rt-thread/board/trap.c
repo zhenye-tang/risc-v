@@ -4,65 +4,30 @@
 #include "rt_hw_stack_frame.h"
 #include "riscv-plic.h"
 #include "tick.h"
+#include "encoding.h"
 
 #define ISR_NUMBER    32
-static struct rt_irq_desc irq_desc[ISR_NUMBER];
+extern struct rt_irq_desc irq_desc[];
 
-rt_isr_handler_t rt_hw_interrupt_handle(rt_uint32_t mcause)
+uintptr_t __attribute__((weak))
+handle_irq_dummy(uintptr_t mepc)
 {
-    rt_kprintf("UN-handled interrupt %d occurred!!!\n", mcause);
-    return RT_NULL;
+    while(1);
+    return mepc;
 }
 
-void rt_hw_interrupt_init(void)
-{
-    int idx = 0;
+uintptr_t __attribute__((weak, alias("handle_irq_dummy")))
+clint_m_timer_irq_handle(uintptr_t mepc);
 
-    for (idx = 0; idx < ISR_NUMBER; idx++)
-    {
-        irq_desc[idx].handler = (rt_isr_handler_t)rt_hw_interrupt_handle;
-        irq_desc[idx].param = RT_NULL;
-    }
-    __plic_set_threshold(0);
-    asm volatile("csrs mie, %0" : : "r"(1 << 11));
-}
-
-void rt_hw_interrupt_umask(int vector)
-{
-    __plic_set_priority(vector, 1);
-    __plic_irq_enable(vector);
-}
-
-void rt_hw_interrupt_mask(int vector)
-{
-    __plic_irq_disable(vector);
-}
-
-rt_isr_handler_t rt_hw_interrupt_install(int vector, rt_isr_handler_t handler,
-        void *param, const char *name)
-{
-    rt_isr_handler_t old_handler = RT_NULL;
-    void *user_param = param;
-
-    if(vector < ISR_NUMBER)
-    {
-        old_handler = irq_desc[vector].handler;
-        if (handler != RT_NULL)
-        {
-            irq_desc[vector].handler = (rt_isr_handler_t)handler;
-            irq_desc[vector].param = param;
-        }
-    }
-
-    return old_handler;
-}
+uintptr_t __attribute__((weak, alias("handle_irq_dummy")))
+clint_m_soft_irq_handle(uintptr_t mepc);
 
 void handle_trap(rt_uint32_t mcause, rt_uint32_t mepc, struct rt_hw_stack_frame *sp)
 {
     if (mcause == 0x80000007)
     {
         /* M mode timer isr */
-        rt_hw_tick_isr();
+        clint_m_timer_irq_handle(mepc);
     }
     else if (mcause == 0x8000000B)
     {
@@ -75,6 +40,7 @@ void handle_trap(rt_uint32_t mcause, rt_uint32_t mepc, struct rt_hw_stack_frame 
     else if (mcause == 0x80000003)
     {
         /* M mode soft isr */
+        clint_m_soft_irq_handle(mepc);
     }
     else
     {
