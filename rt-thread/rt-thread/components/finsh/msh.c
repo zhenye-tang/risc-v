@@ -92,6 +92,8 @@ MSH_CMD_EXPORT_ALIAS(cmd_free, free, Show the memory usage in the system);
 #endif /* RT_USING_HEAP */
 
 #if RT_CPUS_NR > 1
+#include <stdlib.h>
+
 static int cmd_bind(int argc, char **argv)
 {
     rt_err_t result;

@@ -23,9 +23,7 @@ _start:
     li      t2, __STACKSIZE__
     mul     t1, t1, t2
     add     sp, sp, t1
-#ifdef RT_USING_SMP
     bnez a0, secondary_cpu_entry
-#endif
     j    primary_cpu_entry
 
 primary_cpu_entry:
@@ -58,4 +56,8 @@ secondary_cpu_entry:
 .align 2
 secondary_boot_flag:
     .word 0
+#else
+secondary_cpu_entry:
+  wfi
+  j secondary_cpu_entry 
 #endif

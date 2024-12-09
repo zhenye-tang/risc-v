@@ -2,9 +2,10 @@
 #include <rtthread.h>
 #include <stdint.h>
 #include "encoding.h"
+#ifdef RT_USING_SMP
 #include "clint.h"
 #include "atomic.h"
-
+#endif
 
 int rt_hw_cpu_id(void)
 {

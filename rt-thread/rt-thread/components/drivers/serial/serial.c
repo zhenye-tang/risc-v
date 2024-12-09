@@ -267,6 +267,7 @@ rt_inline int _serial_poll_tx(struct rt_serial_device *serial, const rt_uint8_t 
     RT_ASSERT(serial != RT_NULL);
 
     size = length;
+    rt_spin_lock(&serial->spinlock);
     while (length)
     {
         /*
@@ -285,6 +286,7 @@ rt_inline int _serial_poll_tx(struct rt_serial_device *serial, const rt_uint8_t 
         ++ data;
         -- length;
     }
+    rt_spin_unlock(&serial->spinlock);
 
     return size - length;
 }

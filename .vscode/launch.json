@@ -5,7 +5,7 @@
             "name": "Debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/startup/riscv32.elf",
+            "program": "${workspaceFolder}/rt-thread/rtthread.elf",
             "args": [],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}",

@@ -2,7 +2,6 @@
 #include "rtthread.h"
 #include <stdio.h>
 #include <stdint.h>
-#include "rtconfig.h"
 
 static void thread_entry(void *prma)
 {
@@ -11,7 +10,7 @@ static void thread_entry(void *prma)
     b = 5.678;
     while (1)
     {
-        rt_thread_mdelay(1000);
+        rt_thread_mdelay(3000);
         rt_kprintf("Hello risc-v!! %f, cpu_id = %d.\n", a+b, rt_hw_cpu_id());
     }
 }
