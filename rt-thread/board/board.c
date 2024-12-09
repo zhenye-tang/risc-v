@@ -17,7 +17,9 @@ extern int rt_hw_clint_ipi_enable(void);
 void rt_hw_board_init()
 {
     rt_hw_interrupt_init();
+#ifdef RT_USING_SMP
     rt_hw_clint_ipi_enable();
+#endif
     rt_system_heap_init((void *)&__bss_end, (void *)(SRAM_START_ADDR + SRAM_SIZE));
 #ifdef RT_USING_COMPONENTS_INIT
     rt_components_board_init();

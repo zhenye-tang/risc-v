@@ -5,10 +5,13 @@
 #include "clint.h"
 #include "atomic.h"
 
+
 int rt_hw_cpu_id(void)
 {
     return read_csr(mhartid);
 }
+
+#ifdef RT_USING_SMP
 
 void rt_hw_spin_lock_init(rt_hw_spinlock_t *lock)
 {
@@ -56,16 +59,10 @@ static int clint_ipi_cb(void *user_data)
 void secondary_cpu_c_start(void)
 {
     rt_hw_spin_lock(&_cpus_lock);
-
-    /* initialize interrupt controller */
     rt_hw_scondary_interrupt_init();
-
     rt_hw_tick_init();
-
     rt_hw_clint_ipi_enable();
-
     clint_ipi_register(clint_ipi_cb, NULL);
-
     rt_system_scheduler_start();
 }
 
@@ -73,3 +70,6 @@ void rt_hw_secondary_cpu_idle_exec(void)
 {
     asm volatile ("wfi");
 }
+
+#endif
+

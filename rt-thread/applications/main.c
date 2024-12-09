@@ -12,7 +12,6 @@ static void thread_entry(void *prma)
     while (1)
     {
         rt_thread_mdelay(1000);
-        
         rt_kprintf("Hello risc-v!! %f, cpu_id = %d.\n", a+b, rt_hw_cpu_id());
     }
 }

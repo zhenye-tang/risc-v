@@ -29,8 +29,6 @@ rt_isr_handler_t rt_hw_interrupt_handle(rt_uint32_t mcause)
 void rt_hw_scondary_interrupt_init()
 {
     __plic_set_threshold(0);
-    // asm volatile("csrs mie, %0" : : "r"(1 << 11));
-    /* Enable machine external interrupts. */
     set_csr(mie, MIP_MEIP);
 }
 
