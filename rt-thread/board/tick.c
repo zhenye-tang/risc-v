@@ -6,7 +6,7 @@
 
 void rt_hw_us_delay(rt_uint32_t us)
 {
-
+    clint_timer_udelay(us);
 }
 
 static int clint_timer_cb(void *user)

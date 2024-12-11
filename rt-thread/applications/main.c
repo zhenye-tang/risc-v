@@ -5,13 +5,10 @@
 
 static void thread_entry(void *prma)
 {
-    float a, b;
-    a = 3.1415926;
-    b = 5.678;
     while (1)
     {
         rt_thread_mdelay(3000);
-        rt_kprintf("Hello risc-v!! %f, cpu_id = %d.\n", a+b, rt_hw_cpu_id());
+        rt_kprintf("Hello risc-v, I'm cpu_%d!!!\n", rt_hw_cpu_id());
     }
 }
 

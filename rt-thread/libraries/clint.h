@@ -70,6 +70,7 @@ int clint_timer_init(void);
 int clint_timer_start(uint64_t delayms, int one_shot);
 int clint_timer_register(clint_timer_cb_t callback, void *user_data);
 int clint_timer_mdelay(uint64_t ms);
+int clint_timer_udelay(uint64_t us);
 uint64_t clint_timer_current_tick(void);
 
 #ifdef __cplusplus

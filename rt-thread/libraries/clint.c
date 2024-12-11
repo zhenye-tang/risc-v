@@ -121,6 +121,17 @@ int clint_timer_mdelay(uint64_t ms)
     return 0;
 }
 
+int clint_timer_udelay(uint64_t us)
+{
+    uint64_t end = clint->mtime + us * (CPUTIME_TIMER_FREQ / 1000000UL);
+    uint64_t current_time = clint->mtime;
+    while(current_time < end)
+    {
+        current_time = clint->mtime;
+    }
+    return 0;
+}
+
 uintptr_t clint_m_timer_irq_handle(uintptr_t mepc)
 {
     int id = current_coreid();

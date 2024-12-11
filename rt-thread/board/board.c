@@ -1,11 +1,6 @@
 #include <stdint.h>
 #include <rthw.h>
 #include <rtthread.h>
-#include "rtconfig.h"
-#include "rttypes.h"
-#include "tick.h"
-#include "drv_uart.h"
-#include "clint.h"
 
 #define SRAM_START_ADDR        (0x80000000)
 #define SRAM_SIZE              (0x1000000)
