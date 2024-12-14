@@ -2,13 +2,16 @@
 #include "rtthread.h"
 #include <stdio.h>
 #include <stdint.h>
+#include "system_call.h"
+
+static int *p = NULL;
 
 static void thread_entry(void *prma)
 {
     while (1)
     {
         rt_thread_mdelay(3000);
-        rt_kprintf("Hello risc-v, I'm cpu_%d!!!\n", rt_hw_cpu_id());
+        rt_kprintf("Hello risc-v, I'm cpu_%d, Privileged Mode = 0x%x!!!\n", system_gethart(), system_current_mode());
     }
 }
 

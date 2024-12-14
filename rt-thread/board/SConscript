@@ -11,6 +11,7 @@ trap.c
 tick.c
 cpuport_smp.c
 interrupt.c
+system_call.c
 ''')
 
 path =  [cwd]

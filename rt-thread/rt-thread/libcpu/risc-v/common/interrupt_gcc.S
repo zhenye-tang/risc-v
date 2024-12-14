@@ -109,11 +109,17 @@ trap_entry:
     csrr  a1, mepc
     mv    a2, s0
     call  handle_trap
+    addi sp, sp, -1 * REGBYTES
+    STORE a0, 0 * REGBYTES(sp)
     call  rt_interrupt_leave
+    LOAD a0,  0 * REGBYTES(sp)
+    addi sp, sp, 1 * REGBYTES
+
 
 #ifdef RT_USING_SMP
     /* s0 --> sp */
     csrrw sp, mscratch, sp
+    STORE a0, 0 * REGBYTES(sp)
     mv  a0, sp
     call rt_scheduler_do_irq_switch
     tail   rt_hw_context_switch_exit
@@ -122,6 +128,7 @@ trap_entry:
 
     /* switch to from_thread stack */
     csrrw sp, mscratch, sp
+    STORE a0, 0 * REGBYTES(sp)
 
     /* need to switch new thread */
     la    s0, rt_thread_switch_interrupt_flag
