@@ -23,6 +23,7 @@ _start:
     li      t2, __STACKSIZE__
     mul     t1, t1, t2
     add     sp, sp, t1
+    csrw    mscratch, sp
     bnez a0, secondary_cpu_entry
     j    primary_cpu_entry
 

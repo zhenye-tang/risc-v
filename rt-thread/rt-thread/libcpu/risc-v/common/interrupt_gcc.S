@@ -101,18 +101,7 @@ trap_entry:
 
     /* switch to interrupt stack */
     move  s0, sp
-
-#ifdef RT_USING_SMP
-    /* get cpu id */
-    csrr  t0, mhartid
-
-    /* switch interrupt stack of current cpu */
-    la    sp, __stack_start__
-    addi  t1, t0, 1
-    li    t2, __STACKSIZE__
-    mul   t1, t1, t2
-    add   sp, sp, t1 /* sp = (cpuid + 1) * __STACKSIZE__ + __stack_start__ */
-#endif
+    csrrw sp, mscratch,sp
 
     /* handle interrupt */
     call  rt_interrupt_enter
@@ -124,15 +113,15 @@ trap_entry:
 
 #ifdef RT_USING_SMP
     /* s0 --> sp */
-    mv  sp, s0
-    mv  a0, s0
+    csrrw sp, mscratch, sp
+    mv  a0, sp
     call rt_scheduler_do_irq_switch
     tail   rt_hw_context_switch_exit
 
 #else
 
     /* switch to from_thread stack */
-    move  sp, s0
+    csrrw sp, mscratch, sp
 
     /* need to switch new thread */
     la    s0, rt_thread_switch_interrupt_flag
