@@ -35,7 +35,7 @@ int clint_ipi_init(void)
 
 int clint_ipi_enable(void)
 {
-    set_csr(mstatus, MSTATUS_MIE);
+    // set_csr(mstatus, MSTATUS_MIE);
     set_csr(mie, MIP_MSIP);
     return 0;
 }
@@ -91,7 +91,7 @@ int clint_timer_start(uint64_t delayms, int one_shot)
     uint64_t now = clint->mtime;
     uint64_t end = now + clint_timer_desc[id].ticks;
     clint->mtimecmp[id].value = end;
-    set_csr(mstatus, MSTATUS_MIE);
+    // set_csr(mstatus, MSTATUS_MIE);
     set_csr(mie, MIP_MTIP);
 
     return 0;

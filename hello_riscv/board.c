@@ -1,6 +1,7 @@
 #include "clint.h"
 #include "uart.h"
 #include "atomic.h"
+#include "irq.h"
 
 extern unsigned int __bss_start;
 extern unsigned int __bss_end;
@@ -66,6 +67,7 @@ void secondary_cpu_entry(void)
     /* TODO: What if weakup_flag is a junk value? Is there a more elegant way?*/
     while (!weakup_flag);
 
+    __enable_irq();
     clint_timer_init();
     clint_timer_start(2000, 0);
     clint_timer_register(clint_timer_cb, NULL);

@@ -14,12 +14,12 @@ struct irq_desc
 // mie: global interrupt enable 
 __attribute__((always_inline)) static inline void __enable_irq(void)
 {
-    __asm volatile("csrs mstatus, 8");
+    __asm volatile("csrsi mstatus, 8");
 }
 
 __attribute__((always_inline)) static inline void __disable_irq(void)
 {
-    __asm volatile("csrc mstatus, 8");
+    __asm volatile("csrci mstatus, 8");
 }
 
 void interrupt_init(void);
