@@ -1,6 +1,8 @@
 #ifndef __PLIC_H__
 #define __PLIC_H__
 
+#include <stdint.h>
+
 #define PLIC_M_BASE                          0x0C000000
 #define PLIC_M_PRIORITY_OFFSET               0x0000
 #define PLIC_M_ENABLE_OFFSET                 0x2000
@@ -28,5 +30,32 @@ void plic_irq_disable(int irq);
 void plic_set_threshold(int mthreshold);
 int  plic_claim(void);
 void plic_complete(int irq);
+
+typedef struct plic_priority
+{
+    uint32_t priority[1024];
+} plic_priority_t;
+
+typedef struct plic_pending
+{
+    uint32_t pending[32];
+    uint32_t reverse[1024 - 32];
+} plic_pending_t;
+
+typedef struct plic_enable
+{
+    struct
+    {
+        uint32_t enable[32];
+    } target[15872]; //0x1F1FFC
+    uint8_t reverse[0xe000]; // 0x1FFFFC
+} plic_enable_t;
+
+typedef struct 
+{
+    plic_priority_t priority;
+    plic_pending_t pendding;
+    plic_enable_t enable;
+} plic_t;
 
 #endif //__PLIC_H__
