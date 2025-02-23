@@ -35,6 +35,11 @@ SECTIONS
         *(.sdata .sdata.*)
         . = ALIGN(4);
         /* This is used by the startup in order to initialize the .data secion */
+
+        PROVIDE(__ctors_start__ = .);
+        KEEP (*(SORT(.init_array.*)))
+        KEEP (*(.init_array))
+        PROVIDE(__ctors_end__ = .);
 		_edata = .;
     } > RAM
 

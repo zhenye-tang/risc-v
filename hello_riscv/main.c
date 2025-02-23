@@ -15,9 +15,14 @@ static int clint_ipi_cb(void *user_data)
     return 0;
 }
 
+extern int cpp_test();
+extern void cplusplus_init(void);
+
 int main(void)
 {
     interrupt_init();
+    cplusplus_init();
+    cpp_test();
     uart_init();
     uart_printf("hello risc-v.\n");
     clint_timer_init();

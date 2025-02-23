@@ -1,6 +1,10 @@
 #ifndef __PLIC_H__
 #define __PLIC_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define PLIC_M_BASE                          0x0C000000
 #define PLIC_M_PRIORITY_OFFSET               0x0000
 #define PLIC_M_ENABLE_OFFSET                 0x2000
@@ -28,5 +32,9 @@ void plic_irq_disable(int irq);
 void plic_set_threshold(int mthreshold);
 int  plic_claim(void);
 void plic_complete(int irq);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //__PLIC_H__

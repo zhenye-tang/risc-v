@@ -55,7 +55,7 @@ void uart_init(void)
 
 static spinlock_t spinlock;
 
-void uart_printf(char* fmt,...)
+void uart_printf(const char* fmt,...)
 {
     /* TODO: add spin lock */
     static uint8_t tx_buf[200];

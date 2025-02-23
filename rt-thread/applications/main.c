@@ -15,8 +15,11 @@ static void thread_entry(void *prma)
     }
 }
 
+extern void cpp_test();
+
 int main(void)
 {
+    cpp_test();
     rt_kprintf("Hello risc-v!!\n");
     rt_thread_t thread = rt_thread_create("thread0", thread_entry, NULL, 2048, 10, 20);
     rt_thread_startup(thread);
